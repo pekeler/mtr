@@ -141,7 +141,7 @@ void split_open(void)
 #endif
   LineCount = -1;
   for (i=0; i<MAX_LINE_COUNT; i++) {
-    strcpy(Lines[i], "???");
+    strcpy(Lines[i], "");
   }
 }
 
