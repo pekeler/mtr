@@ -74,7 +74,7 @@ void split_redraw(void)
 {
   int   max;
   int   at;
-  ip_t *addr;
+  ip_t *addr, *addrs;
   char  newLine[MAX_LINE_SIZE];
   int   i;
 
@@ -123,6 +123,24 @@ void split_redraw(void)
 #endif
     } else {
       printf("%d %s\n", at+1, newLine);
+
+      if (strcmp(newLine, "???") != 0) {
+        /* Multi path */
+        for (i=0; i < MAXPATH; i++ ) {
+          addrs = net_addrs(at, i);
+          if ( addrcmp( (void *) addrs, (void *) addr, af ) == 0 ) continue;
+          if ( addrcmp( (void *) addrs, (void *) &unspec_addr, af ) == 0 ) break;
+          char *name;
+
+          if (!(name = dns_lookup(addrs)))
+            name = strlongip(addrs);
+          if (show_ips)
+            printf("- %d %d %s %s\n", at+1, i+1, name, strlongip(addrs));
+          else
+            printf("- %d %d %s\n", at+1, i+1, name);
+        }
+      }
+
       fflush(stdout);
       strcpy(Lines[at], newLine);
       if (LineCount < (at+1)) {
